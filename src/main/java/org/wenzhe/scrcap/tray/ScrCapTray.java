@@ -10,17 +10,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.wenzhe.scrcap.ScrCapProps;
 import org.wenzhe.scrcap.ScrCapSetting;
 import org.wenzhe.scrcap.ScreenCapture;
-import org.wenzhe.scrcap.hotkey.HotKey;   
+import org.wenzhe.scrcap.gif.GifConvertion;
+import org.wenzhe.scrcap.hotkey.HotKey;
 
 /**
  * @author liuwenzhe2008@qq.com
@@ -42,6 +48,7 @@ public class ScrCapTray {
       menu.add(createAutoChangeHotKeyItem());
       menu.add(createAutoCaptureItem());
       menu.add(createMaxAllowDiffForImageCompareItem());
+      menu.add(createExportToGifItem());
       menu.add(createAboutItem());
       menu.add(createExitItem());
 
@@ -60,6 +67,50 @@ public class ScrCapTray {
       HotKey.registerCaptureHotKey(HotKey.SWITCH_AUTO_CAPTURE_KEY, ScrCapProps.getSetting().getSwitchAutoCaptureKey());
       HotKey.start();
     }  
+  }
+
+  private static MenuItem createExportToGifItem() {
+    MenuItem item = new MenuItem("Export to GIF Video");
+    item.addActionListener(new ActionListener() {  
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        GifConvertion currentConvertion = GifConvertion.getCurrentConvertion();
+        if (currentConvertion != null) {
+          String progress = currentConvertion.getProgress();
+          String exportedGif = currentConvertion.getExportedGif().toString();
+          int r = JOptionPane.showConfirmDialog(null, 
+              "Now Export to GIF Video (" + progress + " for " + exportedGif + ")\n" 
+            + "Would you want to stop current GIF convertion?");
+          if (JOptionPane.YES_OPTION == r) {
+            currentConvertion.stopConvertion();
+          }
+          return;
+        }
+        JFileChooser c = new JFileChooser();
+        c.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        c.addChoosableFileFilter(new FileNameExtensionFilter("GIF Image", "gif"));
+        c.setAcceptAllFileFilterUsed(true);
+        int rVal = c.showSaveDialog(null);
+        if (rVal != JFileChooser.APPROVE_OPTION) {
+          return;
+        }
+        Path fileToSave = c.getSelectedFile().toPath();
+        String gifFile = fileToSave.toString();
+        if (!gifFile.endsWith(".gif")) {
+          fileToSave = Paths.get(gifFile + ".gif");
+        }
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String param = JOptionPane.showInputDialog(
+            "Start time: yyyy-MM-dd hh:mm:ss, End time: yyyy-MM-dd hh:mm:ss, Interval Between Frames (ms): 500", 
+            now + ", " + now + ", " + 500
+            );
+        if (param == null || param.isEmpty()) {
+          return;
+        }
+        GifConvertion.convertToGif(param, fileToSave);
+      }  
+    });
+    return item;
   }
 
   private static MenuItem createMaxAllowDiffForImageCompareItem() {
