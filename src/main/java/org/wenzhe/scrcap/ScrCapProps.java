@@ -11,117 +11,102 @@ import java.util.Properties;
  *
  */
 public class ScrCapProps {
-	
-	private static final String EXPORTED_DIR = "exportedDir";
 
-	private static final String AUTO_CAPTURE = "autoCapture";
-	
-	private static final String HOT_KEY = "hotKey";
+  private static final String EXPORTED_DIR = "exportedDir";
 
-	private static final String CLIP_KEY = "clipKey";
+  private static final String AUTO_CAPTURE = "autoCapture";
 
-	private static final String MAX_ALLOW_DIFF_FOR_IMAGECOMPARE = "maxAllowDiffForImageCompare";
-	
-	private static final String SWITCH_AUTO_CAPTURE_KEY = "switchAutoCaptureKey";
+  private static final String HOT_KEY = "hotKey";
 
-	private static ScrCapSetting setting;
-	
-	public static ScrCapSetting getSetting() {
-		if (setting == null) {
-			setting = load();
-		}
-		return setting;
-	}
+  private static final String CLIP_KEY = "clipKey";
 
-	private static ScrCapSetting load() {
-		ScrCapSetting setting = new ScrCapSetting();
-		File f = getSettingPropertiesFile();
-		if (!f.exists()) {
-			setting.setExportedDir(getDefaultExportedDir());
-			return setting;
-		}
-		Properties prop = new Properties();
-		try {
-			prop.load(new FileInputStream(f));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			setting.setExportedDir(getDefaultExportedDir());
-			return setting;
-		}
-		try {
-			setting.setAutoCaptureInteval(Integer.parseInt(
-				prop.getProperty(AUTO_CAPTURE, "5")));
-		} catch (NumberFormatException e) {
-			setting.setAutoCaptureInteval(5);
-		}
-		
-		setting.setExportedDir(new File(
-				prop.getProperty(EXPORTED_DIR, getDefaultExportedDir().getPath())));
-		String hotKey = prop.getProperty(HOT_KEY, "A");
-		if (hotKey.length() == 0) {
-			hotKey = "A";
-		}
-		setting.setHotKey(hotKey.charAt(0));
-		
-		String clipKey = prop.getProperty(CLIP_KEY, "Q");
-		if (clipKey.length() == 0) {
-			clipKey = "Q";
-		}
-		setting.setClipKey(clipKey.charAt(0));
+  private static final String MAX_ALLOW_DIFF_FOR_IMAGECOMPARE = "maxAllowDiffForImageCompare";
 
-		String switchAutoCaptKey = prop.getProperty(SWITCH_AUTO_CAPTURE_KEY, "W");
-		if (switchAutoCaptKey.length() == 0) {
-			switchAutoCaptKey = "W";
-		}
-		setting.setSwitchAutoCaptureKey(switchAutoCaptKey.charAt(0));
-		
-		String maxAllowDiffForImageCompare = prop.getProperty(MAX_ALLOW_DIFF_FOR_IMAGECOMPARE, "100");
-		try {
-			setting.setMaxAllowDiffForImageCompare(Integer.parseInt(maxAllowDiffForImageCompare));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
+  private static final String SWITCH_AUTO_CAPTURE_KEY = "switchAutoCaptureKey";
 
-		return setting;
-	}
+  private static ScrCapSetting setting;
 
-	private static File getSettingPropertiesFile() {
-		return new File(ScrCapSetting.getWorkDir(), "setting.properties");
-	}
+  public static ScrCapSetting getSetting() {
+    if (setting == null) {
+      setting = load();
+    }
+    return setting;
+  }
 
-	private static File getDefaultExportedDir() {
-		return new File(ScrCapSetting.getWorkDir(), "exported");
-	}
+  private static ScrCapSetting load() {
+    ScrCapSetting setting = new ScrCapSetting();
+    File f = getSettingPropertiesFile();
+    if (!f.exists()) {
+      setting.setExportedDir(getDefaultExportedDir());
+      return setting;
+    }
+    Properties prop = new Properties();
+    try {
+      prop.load(new FileInputStream(f));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      setting.setExportedDir(getDefaultExportedDir());
+      return setting;
+    }
+    try {
+      setting.setAutoCaptureInteval(Integer.parseInt(
+          prop.getProperty(AUTO_CAPTURE, "5")));
+    } catch (NumberFormatException e) {
+      setting.setAutoCaptureInteval(5);
+    }
 
-	public static void save() {
-		if (setting == null) {
-			return;
-		}
-		Properties prop = new Properties();
-		prop.setProperty(EXPORTED_DIR, setting.getExportedDir().getPath());
-		prop.setProperty(AUTO_CAPTURE, String.valueOf(setting.getAutoCaptureInteval()));
-		prop.setProperty(SWITCH_AUTO_CAPTURE_KEY, String.valueOf(setting.getSwitchAutoCaptureKey()));
-		prop.setProperty(HOT_KEY, String.valueOf(setting.getHotKey()));
-		prop.setProperty(CLIP_KEY, String.valueOf(setting.getClipKey()));
-		prop.setProperty(MAX_ALLOW_DIFF_FOR_IMAGECOMPARE, String.valueOf(setting.getMaxAllowDiffForImageCompare()));
-		
-		File f = getSettingPropertiesFile();
-		if (!f.exists()) {
-			f.getParentFile().mkdirs();
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		try {
-			prop.store(new FileOutputStream(f), "screen capture settings");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+    setting.setExportedDir(new File(prop.getProperty(EXPORTED_DIR, getDefaultExportedDir().getPath())));
+    setting.setCaptureKey(prop.getProperty(HOT_KEY, "A"));
+    setting.setClipKey(prop.getProperty(CLIP_KEY, "Q"));
+    setting.setSwitchAutoCaptureKey(prop.getProperty(SWITCH_AUTO_CAPTURE_KEY, "W"));
+
+    String maxAllowDiffForImageCompare = prop.getProperty(MAX_ALLOW_DIFF_FOR_IMAGECOMPARE, "100");
+    try {
+      setting.setMaxAllowDiffForImageCompare(Integer.parseInt(maxAllowDiffForImageCompare));
+    } catch (NumberFormatException e) {
+      e.printStackTrace();
+    }
+
+    return setting;
+  }
+
+  private static File getSettingPropertiesFile() {
+    return new File(ScrCapSetting.getWorkDir(), "setting.properties");
+  }
+
+  private static File getDefaultExportedDir() {
+    return new File(ScrCapSetting.getWorkDir(), "exported");
+  }
+
+  public static void save() {
+    if (setting == null) {
+      return;
+    }
+    Properties prop = new Properties();
+    prop.setProperty(EXPORTED_DIR, setting.getExportedDir().getPath());
+    prop.setProperty(AUTO_CAPTURE, String.valueOf(setting.getAutoCaptureInteval()));
+    prop.setProperty(SWITCH_AUTO_CAPTURE_KEY, String.valueOf(setting.getSwitchAutoCaptureKey()));
+    prop.setProperty(HOT_KEY, String.valueOf(setting.getCaptureKey()));
+    prop.setProperty(CLIP_KEY, String.valueOf(setting.getClipKey()));
+    prop.setProperty(MAX_ALLOW_DIFF_FOR_IMAGECOMPARE, String.valueOf(setting.getMaxAllowDiffForImageCompare()));
+
+    File f = getSettingPropertiesFile();
+    if (!f.exists()) {
+      f.getParentFile().mkdirs();
+      try {
+        f.createNewFile();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    try {
+      prop.store(new FileOutputStream(f), "screen capture settings");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
 }
