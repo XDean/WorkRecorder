@@ -66,7 +66,11 @@ public interface ScreenRecorderTool {
 
   @Tool
   IToolGetter ABOUT = () -> new SimpleToolItem("About", () -> Platform.runLater(
-      () -> new Alert(AlertType.INFORMATION, "Author: Wenzhe Liu\\nContact: liuwenzhe2008@qq.com", ButtonType.OK).showAndWait()));
+      () -> new Alert(AlertType.INFORMATION,
+          "Author: Wenzhe Liu\n"
+              + "Contact: liuwenzhe2008@qq.com\n"
+              + "Intergrate by XDean@github.com",
+          ButtonType.OK).showAndWait()));
 
   static void changeExportedDir() {
     ScrCapSetting setting = ScrCapProps.getSetting();
