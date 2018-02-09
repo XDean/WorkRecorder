@@ -18,10 +18,11 @@ public class HotkeyItem extends AbstractToolItem {
   private final Consumer<String> setKey;
 
   public HotkeyItem(String text, Supplier<String> getKey, Consumer<String> setKey) {
-    super(text);
+    super();
     this.text = text;
     this.getKey = getKey;
     this.setKey = setKey;
+    this.textProperty().set(formatText(text, getKey.get()));
   }
 
   @Override
@@ -34,14 +35,17 @@ public class HotkeyItem extends AbstractToolItem {
       editor.setEditable(false);
       editor.setOnKeyPressed(e -> {
         List<String> list = new ArrayList<>();
-        if (e.isAltDown()) {
-          list.add("ALT");
+        if (e.isControlDown()) {
+          list.add("CTRL");
         }
         if (e.isShiftDown()) {
           list.add("SHIFT");
         }
-        if (e.isControlDown()) {
-          list.add("CTRL");
+        if (e.isAltDown()) {
+          list.add("ALT");
+        }
+        if (e.isMetaDown()) {
+          list.add("WIN");
         }
         if (e.getCode().isLetterKey()) {
           list.add(e.getCode().toString());

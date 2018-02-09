@@ -10,6 +10,11 @@
 		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<tool.assembly.path>${tool.extension.path}</tool.assembly.path>
+		<assembly.file>${assembly.dir}/pack-with-system.xml</assembly.file>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.github.XDean</groupId>

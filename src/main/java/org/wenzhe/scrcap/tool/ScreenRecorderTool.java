@@ -15,6 +15,9 @@ import org.wenzhe.scrcap.ScrCapProps;
 import org.wenzhe.scrcap.ScrCapSetting;
 import org.wenzhe.scrcap.ScreenCapture;
 import org.wenzhe.scrcap.gif.GifConvertion;
+import org.wenzhe.scrcap.hotkey.HotKey;
+
+import com.sun.javafx.application.PlatformImpl;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -28,16 +31,7 @@ import xdean.tool.sys.other.CommandTool;
 
 @Tool(path = "ScreenRecorder")
 public interface ScreenRecorderTool {
-  // menu.add(createOpenExportedFolderItem());
-  // menu.add(createChangeExportedDirItem());
-  // menu.add(createChangeHotKeyItem());
-  // menu.add(createChangeClipKeyItem());
-  // menu.add(createAutoChangeHotKeyItem());
-  // menu.add(createAutoCaptureItem());
-  // menu.add(createMaxAllowDiffForImageCompareItem());
-  // menu.add(createExportToGifItem());
-  // menu.add(createAboutItem());
-  // menu.add(createExitItem());
+  Void init = init();
   ScrCapSetting setting = ScrCapProps.getSetting();
 
   @Tool
@@ -54,7 +48,7 @@ public interface ScreenRecorderTool {
   @Tool
   IToolGetter CLIP_HOTKEY = () -> new HotkeyItem("Set Hotkey to Clip Screen", setting::getClipKey,
       setting::setClipKey);
-  
+
   @Tool
   IToolGetter AUTO_HOTKEY = () -> new HotkeyItem("Set Hotkey to Auto Capture Screen", setting::getSwitchAutoCaptureKey,
       setting::setSwitchAutoCaptureKey);
@@ -90,6 +84,15 @@ public interface ScreenRecorderTool {
     }
     setting.setExportedDir(newDir);
     ScrCapProps.save();
+  }
+
+  static Void init() {
+    PlatformImpl.startup(() -> {
+      PlatformImpl.setTaskbarApplication(false);
+      Platform.setImplicitExit(false);
+    });
+    HotKey.start();
+    return null;
   }
 
   static void exportGif() {

@@ -15,11 +15,12 @@ public class InputItem<T> extends AbstractToolItem {
   private final StringConverter<T> converter;
 
   public InputItem(String text, Supplier<T> getter, Consumer<T> setter, StringConverter<T> converter) {
-    super(text);
+    super();
     this.text = text;
     this.getter = getter;
     this.setter = setter;
     this.converter = converter;
+    this.textProperty().set(formatText(text, converter.toString(getter.get())));
   }
 
   @Override

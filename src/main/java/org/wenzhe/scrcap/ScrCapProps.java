@@ -50,16 +50,15 @@ public class ScrCapProps {
       return setting;
     }
     try {
-      setting.setAutoCaptureInteval(Integer.parseInt(
-          prop.getProperty(AUTO_CAPTURE, "5")));
+      setting.setAutoCaptureInteval(Integer.parseInt(prop.getProperty(AUTO_CAPTURE, "5")));
     } catch (NumberFormatException e) {
       setting.setAutoCaptureInteval(5);
     }
 
     setting.setExportedDir(new File(prop.getProperty(EXPORTED_DIR, getDefaultExportedDir().getPath())));
-    setting.setCaptureKey(prop.getProperty(HOT_KEY, "A"));
-    setting.setClipKey(prop.getProperty(CLIP_KEY, "Q"));
-    setting.setSwitchAutoCaptureKey(prop.getProperty(SWITCH_AUTO_CAPTURE_KEY, "W"));
+    setting.setCaptureKey(prop.getProperty(HOT_KEY, "WIN+A"));
+    setting.setClipKey(prop.getProperty(CLIP_KEY, "WIN+Q"));
+    setting.setSwitchAutoCaptureKey(prop.getProperty(SWITCH_AUTO_CAPTURE_KEY, "WIN+W"));
 
     String maxAllowDiffForImageCompare = prop.getProperty(MAX_ALLOW_DIFF_FOR_IMAGECOMPARE, "100");
     try {
